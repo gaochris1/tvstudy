@@ -99,6 +99,7 @@ var map = new OpenLayers.Map({
 	units: "meters"
 });
 
+
 var options = {
 		'internalProjection': new OpenLayers.Projection("EPSG:900913"),
 		'externalProjection': new OpenLayers.Projection("EPSG:4326")};
@@ -281,6 +282,8 @@ var coverageLayer = new OpenLayers.Layer.Vector("coverage", {
 layers.push(coverageLayer);
 map.addLayers(layers);
 
+var scaleline = new OpenLayers.Control.ScaleLine();
+map.addControl(scaleline);
 
 
 function getcmaInput(type){
@@ -352,20 +355,23 @@ function getcmaInput(type){
 	//search by city and state
 		if (type=="citystate"){
         document.getElementById('results').style.display = "block";
-		citystate=$('#cityState').val().replace(/\s/g, "").toUpperCase();
-		//alert("citystate: " + citystate);
-		indexOfComma = citystate.indexOf(",");
-		//alert("indexOfComma: " + indexOfComma);
-		city = citystate.substring(0,indexOfComma);
-		//alert("city: " + city);
-		state = citystate.substring(indexOfComma+1,citystate.length);
+        var eCity = document.getElementById("citySelect");
+        city = eCity.options[eCity.selectedIndex].value;
+        
+        var eState = document.getElementById("stateSelect");
+        state = eState.options[eState.selectedIndex].value;
+        
+		//citystate=$('#cityState').val().replace(/\s/g, "").toUpperCase();
+		//indexOfComma = citystate.indexOf(",");
+		//city = citystate.substring(0,indexOfComma);
+		//state = citystate.substring(indexOfComma+1,citystate.length);
 	
-		//alert ("state: " + state);
+		//alert ("city/state: " + state + "/" + city);
 		
 		//facilityids=$('#facilityID').val().replace(/\s/g, "").split(',');
 		//window.location.hash=cmaids;
 		
-    if (citystate.length != 0){    
+    if (city.length != 0){    
     $('#tbl_results tr td').parents('tr').remove();
     
     
@@ -619,7 +625,8 @@ $.getJSON("data/contours.geojson", function (data) {
 	map.zoomToExtent(fullExtent);
 	//map.zoomTo(4);
 	
-	//getCMAList(data);
+	    
+    //getCMAList(data);
 	//console.log(data);
 	var paras=window.location.href.split("#");
 	////alert("from contours.geojson -- paras.length: " + paras.length);
@@ -646,7 +653,23 @@ $.getJSON("data/source.geojson", function (data) {
     map.zoomToExtent(fullExtent);
     map.zoomTo(4);
 
-    //getSourceList(data);
+    //populate the dropdown list
+	var citySelect = '';
+	var stateSelect = '';
+
+    for (i = 0; i < sourceJson.features.length; i++) {
+        if (citySelect !=sourceJson.features[i].properties.CITY.toString()){
+            citySelect = sourceJson.features[i].properties.CITY.toString();
+            $('#citySelect').append("<option>" + citySelect + "</option>");
+        };
+        if (stateSelect !=sourceJson.features[i].properties.STATE.toString()){
+            stateSelect = sourceJson.features[i].properties.STATE.toString();
+            $('#stateSelect').append("<option>" + stateSelect + "</option>");
+        }
+    }
+
+
+	//getSourceList(data);
     //console.log(data);
     var paras = window.location.href.split("#");
     ////alert("from source.geojson -- paras.length: " + paras.length);

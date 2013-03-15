@@ -287,26 +287,60 @@ map.addControl(scaleline);
 
 
 function getcmaInput(type){
-	var cmaids=[];
-	var facilityids = [];
+	//var cmaids=[];
+	var cmaids='';
+    var facilityids = [];
 	var sourceKey = [];
 	var callSign = [];
 	var facilityId = [];
 	var city='';
 	var state = '';
 	var citystate = '';
+	var row1='';
+	var row2='';
+	var row3='';
 	var rows = '';
 	var cols = '';
-	var indexOfComma = '';
+	var indexOf2dashes = '';
 	//search by callsign
 	if (type=="callsign"){
         document.getElementById('results').style.display = "block";
-		cmaids=$('#cmaID').val().replace(/\s/g, "").split(',');
-		//facilityids=$('#facilityID').val().replace(/\s/g, "").split(',');
+		//cmaids=$('#cmaID').val().replace(/\s/g, "").split(',');
+		cmaids=$('#cmaID').val();
+		
+        //facilityids=$('#facilityID').val().replace(/\s/g, "").split(',');
 		//window.location.hash=cmaids;
 		
     if (cmaids.length != 0){    
     $('#tbl_results tr td').parents('tr').remove();
+    
+    for (i = 0; i < sourceJson.features.length; i++) {
+            if (cmaids.toUpperCase() == sourceJson.features[i].properties.CALLSIGN.toString()) {
+                sourceKey[i] = sourceJson.features[i].properties.SOURCEKEY.toString();
+                callSign[i] = sourceJson.features[i].properties.CALLSIGN.toString();
+                facilityId[i] = sourceJson.features[i].properties.FACILITYID.toString();
+                cols = '<td><input id="source' + sourceKey[i] + '" class="cmaID visuallyhidden" type="text" value="' +                          sourceKey[i] + '">'
+                cols += sourceKey[i] + '</td>';
+                cols += '<td>' + callSign[i] + '</td>';
+                cols += '<td>' + facilityId[i] + '</td>';
+                cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
+                row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
+                //alert ("row1: " + row1);
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_popu;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
+                row2 = '<tr>' + cols + '</tr>';
+                rows = row1 + row2;
+    
+                //alert("row2: " + row2);
+                //cols = '<td colspan="4">Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
+                //row3 = '<tr>' + cols + '</tr>';                  
+                //rows = row1 + row2 + row3;
+                //alert("rows: " + rows);
+            }
+        }
+    
+    
+    /*
     for (i = 0; i < sourceJson.features.length; i++) {
         for (j = 0; j < cmaids.length; j++) {
             if (cmaids[j].toString().toUpperCase() == sourceJson.features[i].properties.CALLSIGN.toString()) {
@@ -319,9 +353,15 @@ function getcmaInput(type){
                 cols += '<td>' + facilityId[j] + '</td>';
                 cols += '<td><input id="' + sourceKey[j] + '" type="button" value="Map" class="mapBtnClass"></td>';
                 rows += '<tr>' + cols + '</tr>';
+                cols = '<td colspan="4">Total Population:</td>';
+                rows += rows + '<tr>' + cols + '</tr>';
+                cols = '<tr><td colspan="4">Interference-free Population: </td></tr>';
+                rows += rows + '<tr>' + cols + '</tr>';                  
             }
         }
-    }
+    }*/
+    
+    
     $('#tbl_results').find('tbody').append(rows);
     }
     }
@@ -345,7 +385,13 @@ function getcmaInput(type){
                 cols += '<td>' + callSign[j] + '</td>';
                 cols += '<td>' + facilityId[j] + '</td>';
                 cols += '<td><input id="' + sourceKey[j] + '" type="button" value="Map" class="mapBtnClass"></td>';
-                rows += '<tr>' + cols + '</tr>';
+                row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
+                //alert ("row1: " + row1);
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_popu;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
+                row2 = '<tr>' + cols + '</tr>';
+                rows = row1 + row2;
+                //rows += '<tr>' + cols + '</tr>';
             }
         }
     }
@@ -355,14 +401,20 @@ function getcmaInput(type){
 	//search by city and state
 		if (type=="citystate"){
         document.getElementById('results').style.display = "block";
-        var eCity = document.getElementById("citySelect");
+        /*var eCity = document.getElementById("citySelect");
         city = eCity.options[eCity.selectedIndex].value;
         
         var eState = document.getElementById("stateSelect");
         state = eState.options[eState.selectedIndex].value;
-        
-		//citystate=$('#cityState').val().replace(/\s/g, "").toUpperCase();
-		//indexOfComma = citystate.indexOf(",");
+        */
+		var eCityState=document.getElementById("cityState");
+        citystate=eCityState.options[eCityState.selectedIndex].value;
+        indexOf2dashes = citystate.indexOf("--");
+        state = citystate.substring(0,indexOf2dashes-1);
+		city = citystate.substring(indexOf2dashes+3,citystate.length);
+	    
+        //citystate=$('#cityState').val().replace(/\s/g, "").toUpperCase();
+		//indexOfComma = cityState.indexOf(",");
 		//city = citystate.substring(0,indexOfComma);
 		//state = citystate.substring(indexOfComma+1,citystate.length);
 	
@@ -385,7 +437,13 @@ function getcmaInput(type){
                 cols += '<td>' + callSign[i] + '</td>';
                 cols += '<td>' + facilityId[i] + '</td>';
                 cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
-                rows += '<tr>' + cols + '</tr>';
+                row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
+                //alert ("row1: " + row1);
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_popu;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
+                row2 = '<tr>' + cols + '</tr>';
+                rows = rows + row1 + row2;
+                //rows += '<tr>' + cols + '</tr>';
         }
         
     }
@@ -658,14 +716,20 @@ $.getJSON("data/source.geojson", function (data) {
 	var stateSelect = '';
 
     for (i = 0; i < sourceJson.features.length; i++) {
-        if (citySelect !=sourceJson.features[i].properties.CITY.toString()){
+        /*if (citySelect !=sourceJson.features[i].properties.CITY.toString()){
             citySelect = sourceJson.features[i].properties.CITY.toString();
             $('#citySelect').append("<option>" + citySelect + "</option>");
         };
         if (stateSelect !=sourceJson.features[i].properties.STATE.toString()){
             stateSelect = sourceJson.features[i].properties.STATE.toString();
             $('#stateSelect').append("<option>" + stateSelect + "</option>");
+        }*/
+        if (citySelect !=sourceJson.features[i].properties.CITY.toString() || stateSelect !=sourceJson.features[i].properties.STATE.toString()){
+            citySelect = sourceJson.features[i].properties.CITY.toString();
+            stateSelect = sourceJson.features[i].properties.STATE.toString();
+            $('#cityState').append("<option>" + stateSelect + " -- " + citySelect + "</option>");
         }
+        
     }
 
 

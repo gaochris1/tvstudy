@@ -189,6 +189,7 @@ ul.macro li a.active {
 	float: left;
 	height: 700px;	
 	width: 20%;	
+	overflow:auto;
 }
 
 .sidebar-container {
@@ -208,6 +209,15 @@ ul.macro li a.active {
 
 #map-sidebar ul {
 	margin: 0;
+}
+
+#legend-pic {	
+	position: absolute;
+	right: 150px;
+	bottom: 10px;
+	z-index:999;
+	width: 200px;
+	height:100px;
 }
 
 /* Sidebar */
@@ -378,3 +388,8 @@ tr.selected td {
 .sorting_desc .sort {
 	background: url("../img/dt-arrow-dn.png") no-repeat right center;
 }
+
+.olControlScaleLine {
+    background: white;
+    padding: 20px;
+    }

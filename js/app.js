@@ -326,8 +326,8 @@ function getcmaInput(type){
                 cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
                 row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
                 //alert ("row1: " + row1);
-                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_popu;
-                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_po_1;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_popu + '</td>';
                 row2 = '<tr>' + cols + '</tr>';
                 rows = row1 + row2;
     
@@ -387,8 +387,8 @@ function getcmaInput(type){
                 cols += '<td><input id="' + sourceKey[j] + '" type="button" value="Map" class="mapBtnClass"></td>';
                 row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
                 //alert ("row1: " + row1);
-                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_popu;
-                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_po_1;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_popu + '</td>';
                 row2 = '<tr>' + cols + '</tr>';
                 rows = row1 + row2;
                 //rows += '<tr>' + cols + '</tr>';
@@ -439,8 +439,8 @@ function getcmaInput(type){
                 cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
                 row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
                 //alert ("row1: " + row1);
-                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_popu;
-                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_po_1;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_popu + '</td>';
                 row2 = '<tr>' + cols + '</tr>';
                 rows = rows + row1 + row2;
                 //rows += '<tr>' + cols + '</tr>';

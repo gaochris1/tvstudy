@@ -322,10 +322,10 @@ function getcmaInput(type){
 		
     if (cmaids.length != 0){    
     $('#tbl_results tr td').parents('tr').remove();
-    alert("sourceJson features length:  " + sourceJson.features.length);
+    //alert("sourceJson features length:  " + sourceJson.features.length);
     for (i = 0; i < sourceJson.features.length; i++) {
             if (cmaids.toUpperCase() == sourceJson.features[i].properties.CALLSIGN.toString()) {
-                alert("matched feature id:  " + i);
+                //alert("matched feature id:  " + i);
                 sourceKey[i] = sourceJson.features[i].properties.SOURCEKEY.toString();
                 callSign[i] = sourceJson.features[i].properties.CALLSIGN.toString();
                 facilityId[i] = sourceJson.features[i].properties.FACILITYID.toString();
@@ -345,7 +345,7 @@ function getcmaInput(type){
                 //cols = '<td colspan="4">Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
                 //row3 = '<tr>' + cols + '</tr>';                  
                 //rows = row1 + row2 + row3;
-                alert("rows: " + rows);
+                //alert("rows: " + rows);
             }
         }
     

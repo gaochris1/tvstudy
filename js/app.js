@@ -33,7 +33,13 @@ $(document).ready(function () {
 	 $('#goUser2').click(function(){
     //alert("here");
 	 getcmaInput('citystate');
-	});
+	 });
+	
+  	 $('#goUser3').click(function(){
+    //alert("here");
+	 getcmaInput('channel');
+
+    });
 
 	$('#btn-resetMap').click(function(){
 		$('#tbl-CMA').find('input[type="checkbox"]').each(function(){
@@ -194,8 +200,8 @@ var cmaMap = new OpenLayers.Layer.XYZ(
 	        buffer: 1
 	    }
 	);
-layers.push(stamenToner);
 layers.push(mapboxTerrain);
+layers.push(stamenToner);
 //layers.push(mapboxNightvision);
 //layers.push(mapboxLight);
 //layers.push(cmaMap);
@@ -227,7 +233,7 @@ var sourceStyle = new OpenLayers.StyleMap({
         fontColor: "#0b32fa",
         fontFamily: "sans-serif",
         fontWeight: "bold",
-        labelXOffset: "25"
+        labelXOffset: "35"
     }),
     "temporary": new OpenLayers.Style({
         //strokeColor: "#F09100",
@@ -257,7 +263,8 @@ var coverageLookup = {
     "2" : {strokeColor: "#fa0b26"}
 };
 
-coverageStyle.addUniqueValueRules("default","coverage_5",coverageLookup);
+//coverageStyle.addUniqueValueRules("default","coverage_5",coverageLookup);
+coverageStyle.addUniqueValueRules("default","RESULT",coverageLookup);
 
 
 //var cmaLayer= new OpenLayers.Layer.Vector("cma",{
@@ -277,7 +284,8 @@ map.addLayers(layers);
 
 var coverageLayer = new OpenLayers.Layer.Vector("coverage", {
     styleMap: coverageStyle,
-    displayInLayerSwitcher: false
+    displayInLayerSwitcher: false,
+    reportError: true
 });
 layers.push(coverageLayer);
 map.addLayers(layers);
@@ -302,6 +310,7 @@ function getcmaInput(type){
 	var rows = '';
 	var cols = '';
 	var indexOf2dashes = '';
+    var channel = '';
 	//search by callsign
 	if (type=="callsign"){
         document.getElementById('results').style.display = "block";
@@ -474,6 +483,50 @@ function getcmaInput(type){
     }
     }
 
+
+	//search by channel
+	if (type=="channel"){
+        document.getElementById('results').style.display = "block";
+		//cmaids=$('#cmaID').val().replace(/\s/g, "").split(',');
+		channel=$('#channel').val();
+		
+        //facilityids=$('#facilityID').val().replace(/\s/g, "").split(',');
+		//window.location.hash=cmaids;
+		
+    if (channel.length != 0){    
+    $('#tbl_results tr td').parents('tr').remove();
+    //alert("sourceJson features length:  " + sourceJson.features.length);
+    row0 = '<tr><td colspan="4" align="center"><input id="' + channel + '" class="mapChannelBtnClass" type="button" value="Map All Stations"</td></tr>';
+    for (i = 0; i < sourceJson.features.length; i++) {
+            if (channel.toUpperCase() == sourceJson.features[i].properties.CHANNEL.toString()) {
+                
+                sourceKey[i] = sourceJson.features[i].properties.SOURCEKEY.toString();
+                //alert("matched feature sourceKey:  " + sourceKey[i].toString());
+                callSign[i] = sourceJson.features[i].properties.CALLSIGN.toString();
+                //alert("matched feature callSign:  " + callSign[i].toString());
+                facilityId[i] = sourceJson.features[i].properties.FACILITYID.toString();
+                //alert("matched feature FacilityID:  " + facilityId[i].toString());
+                cols = '<td><input id="source' + sourceKey[i] + '" class="cmaID visuallyhidden" type="text" value="' +                          sourceKey[i] + '">'
+                cols += sourceKey[i] + '</td>';
+                cols += '<td>' + callSign[i] + '</td>';
+                cols += '<td>' + facilityId[i] + '</td>';
+                cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
+                row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
+                //alert ("row1: " + row1);
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_po_1;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_popu + '</td>';
+                row2 = '<tr>' + cols + '</tr>';
+                rows = rows + row1 + row2;
+    
+                
+            }
+        }
+    rows = row0 + rows
+    $('#tbl_results').find('tbody').append(rows);
+    }
+    }
+
+
     $('.mapBtnClass').click(function(){
     
     var mapId = this.id;
@@ -481,6 +534,12 @@ function getcmaInput(type){
     drawcma(mapId);
     });
    
+    $('.mapChannelBtnClass').click(function(){
+    
+    var channelId = this.id;
+    //alert("channelId: " + channelId);
+    drawChannelMap(channelId);
+    });
  	
     //window.location.hash=sourceKey;
 
@@ -489,6 +548,84 @@ function getcmaInput(type){
 
 	
 }
+
+//need another function drawChannelMap to have passed in one channel and then map by this channel
+function drawChannelMap(channelId){
+        //remove coverage for each station first
+/*        var fileName = "data/coverage_channel" + channelId + ".geojson";
+        alert ("file name: " + fileName);
+       
+        $.ajax({
+            url: fileName,
+            dataType: 'json',
+            async: false,
+            success: function(data) {
+            coverageJson = data;
+            myCoverageJson.type = coverageJson.type;
+            myCoverageJson.features = [];
+            map.zoomToExtent(fullExtent);
+            //map.zoomTo(4);
+        }
+        });
+
+    myCoverageJson.features = [];
+    var coverageP = new OpenLayers.Format.GeoJSON(options);
+    var coverageFeats = coverageP.read(coverageJson);
+    alert("length of coverageFeats: " + coverageFeats.length);*/
+    coverageLayer.removeAllFeatures();
+    //coverageLayer.addFeatures(coverageFeats);
+       
+    
+    //draw source layer 
+    mySourceJson.features = [];
+    var sourceP = new OpenLayers.Format.GeoJSON(options);
+    
+    for (i = 0; i < sourceJson.features.length; i++) {
+            if (channelId.toString() == sourceJson.features[i].properties.CHANNEL.toString()) {
+                mySourceJson.features.push(sourceJson.features[i]);
+            }
+    }
+    //alert("source layer feature length:" + mySourceJson.features.length );
+     
+    if (mySourceJson.features.length > 0) {
+        var sourceFeats = sourceP.read(mySourceJson);
+        sourceLayer.removeAllFeatures();
+        ////////alert("inside sourceFeats Length: " + sourceFeats.length);
+        sourceLayer.addFeatures(sourceFeats);
+        
+    }
+    
+    var sourceFeats = sourceP.read(mySourceJson);
+    sourceLayer.removeAllFeatures();
+    ////alert("outside sourceFeats Length: " + sourceFeats.length);
+    sourceLayer.addFeatures(sourceFeats);
+    
+    //draw contour layer
+	myJson.features=[];
+	var p = new OpenLayers.Format.GeoJSON(options);
+	
+	
+	for (i=0;i<cmaJson.features.length;i++){
+			if (channelId.toString()==cmaJson.features[i].properties.CHANNEL.toString()){
+				myJson.features.push(cmaJson.features[i]);
+			}
+	}
+	
+	
+	if(myJson.features.length>0){
+		var feats = p.read(myJson);	
+		cmaLayer.removeAllFeatures();
+	  	cmaLayer.addFeatures(feats);
+	  	map.zoomToExtent(cmaLayer.getDataExtent());
+	}
+	var feats = p.read(myJson);	
+	cmaLayer.removeAllFeatures();
+  	cmaLayer.addFeatures(feats);
+    ////alert("outside contour feats Length: " + feats.length);
+  	map.zoomToExtent(cmaLayer.getDataExtent());
+}
+//end of function drawChannelMap
+
 function drawcma(sourceKey){
         //draw coverage first
         var fileName = "data/coverage_" + sourceKey + ".geojson";

@@ -37,11 +37,22 @@ $(document).ready(function () {
 	
   	 $('#goUser3').click(function(){
     //alert("here");
-	 getcmaInput('channel');
+     getcmaInput('channel');
+     });
+     
+     $('#goUser4').click(function(){
+    //alert("here");
+	 getcmaInput('dma');
 
     });
 
-	$('#btn-resetMap').click(function(){
+    $('#goUser5').click(function () {
+    //alert("here");
+    getcmaInput('cd');
+
+    });
+	
+    $('#btn-resetMap').click(function(){
 		$('#tbl-CMA').find('input[type="checkbox"]').each(function(){
 			$(this).removeAttr('checked');	
 		}).end().find('tr').each(function(){
@@ -341,35 +352,10 @@ function getcmaInput(type){
                 row2 = '<tr>' + cols + '</tr>';
                 rows = rows + row1 + row2;
     
-                //alert("row2: " + row2);
-                //cols = '<td colspan="4">Interference-free: ' + sourceJson.features[i].properties.total_po_1 + '</td>';
-                //row3 = '<tr>' + cols + '</tr>';                  
-                //rows = row1 + row2 + row3;
-                //alert("rows: " + rows);
             }
         }
     
     
-    /*
-    for (i = 0; i < sourceJson.features.length; i++) {
-        for (j = 0; j < cmaids.length; j++) {
-            if (cmaids[j].toString().toUpperCase() == sourceJson.features[i].properties.CALLSIGN.toString()) {
-                sourceKey[j] = sourceJson.features[i].properties.SOURCEKEY.toString();
-                callSign[j] = sourceJson.features[i].properties.CALLSIGN.toString();
-                facilityId[j] = sourceJson.features[i].properties.FACILITYID.toString();
-                cols = '<td><input id="source' + sourceKey[j] + '" class="cmaID visuallyhidden" type="text" value="' +                          sourceKey[j] + '">'
-                cols += sourceKey[j] + '</td>';
-                cols += '<td>' + callSign[j] + '</td>';
-                cols += '<td>' + facilityId[j] + '</td>';
-                cols += '<td><input id="' + sourceKey[j] + '" type="button" value="Map" class="mapBtnClass"></td>';
-                rows += '<tr>' + cols + '</tr>';
-                cols = '<td colspan="4">Total Population:</td>';
-                rows += rows + '<tr>' + cols + '</tr>';
-                cols = '<tr><td colspan="4">Interference-free Population: </td></tr>';
-                rows += rows + '<tr>' + cols + '</tr>';                  
-            }
-        }
-    }*/
     
     
     $('#tbl_results').find('tbody').append(rows);
@@ -411,28 +397,13 @@ function getcmaInput(type){
 	//search by city and state
 		if (type=="citystate"){
         document.getElementById('results').style.display = "block";
-        /*var eCity = document.getElementById("citySelect");
-        city = eCity.options[eCity.selectedIndex].value;
-        
-        var eState = document.getElementById("stateSelect");
-        state = eState.options[eState.selectedIndex].value;
-        */
 		var eCityState=document.getElementById("cityState");
         citystate=eCityState.options[eCityState.selectedIndex].value;
         indexOf2dashes = citystate.indexOf("--");
         state = citystate.substring(0,indexOf2dashes-1);
 		city = citystate.substring(indexOf2dashes+3,citystate.length);
 	    
-        //citystate=$('#cityState').val().replace(/\s/g, "").toUpperCase();
-		//indexOfComma = cityState.indexOf(",");
-		//city = citystate.substring(0,indexOfComma);
-		//state = citystate.substring(indexOfComma+1,citystate.length);
-	
-		//alert ("city/state: " + state + "/" + city);
-		
-		//facilityids=$('#facilityID').val().replace(/\s/g, "").split(',');
-		//window.location.hash=cmaids;
-		
+ 		
     if (city.length != 0){    
     $('#tbl_results tr td').parents('tr').remove();
     
@@ -457,27 +428,6 @@ function getcmaInput(type){
         }
         
     }
-    
-    
-    
-    
-    /*for (i = 0; i < sourceJson.features.length; i++) {
-        for (j = 0; j < citystate.length; j++) {
-            if (city.toString() == sourceJson.features[i].properties.CITY.toString() && state.toString()==sourceJson.features[i].properties.STATE.toString()) {
-                sourceKey[j] = sourceJson.features[i].properties.SOURCEKEY.toString();
-                callSign[j] = sourceJson.features[i].properties.CALLSIGN.toString();
-                facilityId[j] = sourceJson.features[i].properties.FACILITYID.toString();
-                cols = '<td><input id="source' + sourceKey[j] + '" class="cmaID visuallyhidden" type="text" value="' +                          sourceKey[j] + '">'
-                cols += sourceKey[j] + '</td>';
-                cols += '<td>' + callSign[j] + '</td>';
-                cols += '<td>' + facilityId[j] + '</td>';
-                cols += '<td><input id="' + sourceKey[j] + '" type="button" value="Map" class="mapBtnClass"></td>';
-                rows += '<tr>' + cols + '</tr>';
-            }
-        }
-    }
-    */
-    
     
     $('#tbl_results').find('tbody').append(rows);
     }
@@ -525,6 +475,90 @@ function getcmaInput(type){
     $('#tbl_results').find('tbody').append(rows);
     }
     }
+
+    
+  
+ 	//search by dma
+	if (type=="dma"){
+        document.getElementById('results').style.display = "block";
+        var eDma=document.getElementById("dma");
+        var dma=eDma.options[eDma.selectedIndex].value;
+        //indexOf2dashes = citystate.indexOf("--");
+        //state = citystate.substring(0,indexOf2dashes-1);
+		//city = citystate.substring(indexOf2dashes+3,citystate.length);
+	    
+	
+        if (dma.length != 0){    
+        $('#tbl_results tr td').parents('tr').remove();
+    
+    
+    for (i = 0; i < sourceJson.features.length; i++) {
+        if (dma.toString() == sourceJson.features[i].properties.dma.toString()) {
+                sourceKey[i] = sourceJson.features[i].properties.SOURCEKEY.toString();
+                callSign[i] = sourceJson.features[i].properties.CALLSIGN.toString();
+                facilityId[i] = sourceJson.features[i].properties.FACILITYID.toString();
+                cols = '<td><input id="source' + sourceKey[i] + '" class="cmaID visuallyhidden" type="text" value="' + sourceKey[i] + '">'
+                cols += sourceKey[i] + '</td>';
+                cols += '<td>' + callSign[i] + '</td>';
+                cols += '<td>' + facilityId[i] + '</td>';
+                cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
+                row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
+                //alert ("row1: " + row1);
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_po_1;
+                cols +=' ----  Interference-free: ' + sourceJson.features[i].properties.total_popu + '</td>';
+                row2 = '<tr>' + cols + '</tr>';
+                rows = rows + row1 + row2;
+                //rows += '<tr>' + cols + '</tr>';
+        }
+        
+    }
+
+    
+    $('#tbl_results').find('tbody').append(rows);
+    }
+    }
+
+
+//search by cd
+if (type == "cd") {
+    document.getElementById('results').style.display = "block";
+    var eCd = document.getElementById("cd");
+    var cd = eCd.options[eCd.selectedIndex].value;
+   
+
+    if (cd.length != 0) {
+        $('#tbl_results tr td').parents('tr').remove();
+
+
+        for (i = 0; i < sourceJson.features.length; i++) {
+            if (cd.toString() == sourceJson.features[i].properties.cd113.toString()) {
+                sourceKey[i] = sourceJson.features[i].properties.SOURCEKEY.toString();
+                callSign[i] = sourceJson.features[i].properties.CALLSIGN.toString();
+                facilityId[i] = sourceJson.features[i].properties.FACILITYID.toString();
+                cols = '<td><input id="source' + sourceKey[i] + '" class="cmaID visuallyhidden" type="text" value="' + sourceKey[i] + '">'
+                cols += sourceKey[i] + '</td>';
+                cols += '<td>' + callSign[i] + '</td>';
+                cols += '<td>' + facilityId[i] + '</td>';
+                cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
+                row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
+                //alert ("row1: " + row1);
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_po_1;
+                cols += ' ----  Interference-free: ' + sourceJson.features[i].properties.total_popu + '</td>';
+                row2 = '<tr>' + cols + '</tr>';
+                rows = rows + row1 + row2;
+                //rows += '<tr>' + cols + '</tr>';
+            }
+
+        }
+
+
+        $('#tbl_results').find('tbody').append(rows);
+    }
+}
+
+
+
+
 
 
     $('.mapBtnClass').click(function(){
@@ -664,38 +698,9 @@ function drawcma(sourceKey){
     
     //test code ends
     
-    /*
-    for (i = 0; i < coverageJson.features.length; i++) {
-        for (j = 0; j < sourceKey.length; j++) {
-            if (sourceKey[j].toString() == coverageJson.features[i].properties.coverage_2.toString()) {
-                myCoverageJson.features.push(coverageJson.features[i]);
-            }
-        }
-    }
-     
-    if (myCoverageJson.features.length > 0) {
-        var coverageFeats = coverageP.read(myCoverageJson);
-        coverageLayer.removeAllFeatures();
-        coverageLayer.addFeatures(coverageFeats);
-        //map.zoomToExtent(sourceLayer.getDataExtent());
-    }
-    
-        var coverageFeats = coverageP.read(myCoverageJson);
-        coverageLayer.removeAllFeatures();
-        coverageLayer.addFeatures(coverageFeats);
-    */
     //draw source layer first
     mySourceJson.features = [];
     var sourceP = new OpenLayers.Format.GeoJSON(options);
-    /*for (i = 0; i < sourceJson.features.length; i++) {
-        for (j = 0; j < sourceKey.length; j++) {
-            ////alert("source key: " + sourceKey[j] );
-            ////alert("sourceJson.features[i].properties.SOURCEKEY: " + sourceJson.features[i].properties.SOURCEKEY.toString());
-            if (sourceKey[j].toString() == sourceJson.features[i].properties.SOURCEKEY.toString()) {
-                mySourceJson.features.push(sourceJson.features[i]);
-            }
-        }
-    }*/
     
     for (i = 0; i < sourceJson.features.length; i++) {
             if (sourceKey.toString() == sourceJson.features[i].properties.SOURCEKEY.toString()) {
@@ -724,14 +729,6 @@ function drawcma(sourceKey){
 	myJson.features=[];
 	var p = new OpenLayers.Format.GeoJSON(options);
 	
-	/*for (i=0;i<cmaJson.features.length;i++){
-		for (j=0;j<sourceKey.length;j++){
-            ////////alert("contourlayer: " + cmaids[j].toString());
-			if (sourceKey[j].toString()==cmaJson.features[i].properties.SOURCEKEY.toString()){
-				myJson.features.push(cmaJson.features[i]);
-			}
-		}
-	}*/
 	
 	for (i=0;i<cmaJson.features.length;i++){
 			if (sourceKey.toString()==cmaJson.features[i].properties.SOURCEKEY.toString()){
@@ -753,66 +750,6 @@ function drawcma(sourceKey){
   	map.zoomToExtent(cmaLayer.getDataExtent());
 }
 
-
-/*function selectTableRows(cmaids){
-	
-	//deal with table
-	$('#tbl-CMA').find('.cmaID').each(function (){
-		$(this).attr('checked',false);
-	    $(this).parents('tr').removeClass('selected');
-	})
-	
-	$('#tbl-CMA').find('.cmaID').each(function (){
-        for (i=0;i<cmaids.length;i++){       
-        	if ($(this).val()==cmaids[i]){
-        		$(this).attr('checked',true);
-        		$(this).parents('tr').addClass('selected');
-        	}
-        }
-	});  
-}*/
-
-/*function getSourceList (d) {
-	var feats = d.features,
-			featsLen = feats.length
-			rows = '',
-			cols = '';
-	
-	// Create CMA ID table
-			for (var i = 0; i < featsLen; i++) {
-			    cols = '<td><input id="source' + feats[i].properties.SOURCEKEY + '" class="cmaID visuallyhidden" type="checkbox" value="' + feats[i].properties.SOURCEKEY + '">'
-			    cols += feats[i].properties.SOURCEKEY + '</td>';
-			    cols += '<td>' + feats[i].properties.CALLSIGN + '</td>';
-			    rows += '<tr>' + cols + '</tr>';
-			}
-		
-//////alert(rows);
-	$('#tbl-CMA').find('tbody').append(rows);
-	
-	$('#tbl-CMA').dataTable({
-      "aoColumns": [
-                { "sType": "string-num" },
-                null
-            ],			
-			"aaSorting": [
-        [0, "asc"]
-      ],      
-      "bFilter": false,
-      "bInfo": false,
-      "bPaginate": false,
-			"sScrollY": "100px",			
-			"bScrollCollapse": true      
-    });
-	
-	// When window resizes, calc. width of fixed datatable header
-	$(window).resize(function(){
-		$('.dataTables_scrollHead, .dataTables_scrollHeadInner').css('width',($('.dataTables_scrollBody').width()-15) + 'px');	
-	});	
-	
-	
-	
-	
-}*/
 
 $.getJSON("data/contours.geojson", function (data) {
 	cmaJson=data;
@@ -850,28 +787,33 @@ $.getJSON("data/source.geojson", function (data) {
     map.zoomTo(4);
 
     //populate the dropdown list
-	var citySelect = '';
-	var stateSelect = '';
+    var citySelect = '';
+    var stateSelect = '';
+    var dmaSelect = '';
+    var cdSelect = '';
 
     for (i = 0; i < sourceJson.features.length; i++) {
-        /*if (citySelect !=sourceJson.features[i].properties.CITY.toString()){
-            citySelect = sourceJson.features[i].properties.CITY.toString();
-            $('#citySelect').append("<option>" + citySelect + "</option>");
-        };
-        if (stateSelect !=sourceJson.features[i].properties.STATE.toString()){
-            stateSelect = sourceJson.features[i].properties.STATE.toString();
-            $('#stateSelect').append("<option>" + stateSelect + "</option>");
-        }*/
-        if (citySelect !=sourceJson.features[i].properties.CITY.toString() || stateSelect !=sourceJson.features[i].properties.STATE.toString()){
+        if (citySelect != sourceJson.features[i].properties.CITY.toString() || stateSelect != sourceJson.features[i].properties.STATE.toString()) {
             citySelect = sourceJson.features[i].properties.CITY.toString();
             stateSelect = sourceJson.features[i].properties.STATE.toString();
             $('#cityState').append("<option>" + stateSelect + " -- " + citySelect + "</option>");
         }
-        
+
+        if (dmaSelect != sourceJson.features[i].properties.dma.toString()) {
+            dmaSelect = sourceJson.features[i].properties.dma.toString();
+            $('#dma').append("<option>" + dmaSelect + "</option>");
+        }
+
+        if (cdSelect != sourceJson.features[i].properties.cd113.toString()) {
+            cdSelect = sourceJson.features[i].properties.cd113.toString();
+            //alert("cd113:" + cdSelect);
+            $('#cd').append("<option>" + cdSelect + "</option>");
+        }
+
     }
 
 
-	//getSourceList(data);
+    //getSourceList(data);
     //console.log(data);
     var paras = window.location.href.split("#");
     ////alert("from source.geojson -- paras.length: " + paras.length);
@@ -891,29 +833,3 @@ $.getJSON("data/source.geojson", function (data) {
     }
 });
 
-/*$.getJSON("data/coverage.geojson", function (data) {
-    coverageJson = data;
-    myCoverageJson.type = coverageJson.type;
-    myCoverageJson.features = [];
-    map.zoomToExtent(fullExtent);
-    map.zoomTo(4);
-
-    //getSourceList(data);
-    //console.log(data);
-    var paras = window.location.href.split("#");
-    ////////alert("from coverage.geojson -- paras.length: " + paras.length);
-    if (paras.length == 1) {
-        //do nothing
-    }
-    else {
-        if (paras[1].length > 0) {
-            var parasArray = decodeURIComponent(paras[1]).replace(/\s/g, "").split(",");
-            //console.log(parasArray.toString());
-            drawcma(parasArray);
-            console.log("paras: " + parasArray.toString());
-            selectTableRows(parasArray);
-            document.getElementById('cmaID').value = "";
-            document.getElementById('cmaID').value = parasArray.toString();
-        }
-    }
-});*/

@@ -790,7 +790,8 @@ $.getJSON("data/source.geojson", function (data) {
     var citySelect = '';
     var stateSelect = '';
     var dmaSelect = '';
-    var cdSelect = '';
+    var cdArray = new Array();
+    var dmaArray = new Array();
 
     for (i = 0; i < sourceJson.features.length; i++) {
         if (citySelect != sourceJson.features[i].properties.CITY.toString() || stateSelect != sourceJson.features[i].properties.STATE.toString()) {
@@ -798,18 +799,43 @@ $.getJSON("data/source.geojson", function (data) {
             stateSelect = sourceJson.features[i].properties.STATE.toString();
             $('#cityState').append("<option>" + stateSelect + " -- " + citySelect + "</option>");
         }
-
+        /*
         if (dmaSelect != sourceJson.features[i].properties.dma.toString()) {
-            dmaSelect = sourceJson.features[i].properties.dma.toString();
-            $('#dma').append("<option>" + dmaSelect + "</option>");
+        dmaSelect = sourceJson.features[i].properties.dma.toString();
+        $('#dma').append("<option>" + dmaSelect + "</option>");
+        }*/
+
+        if (dmaArray.indexOf(sourceJson.features[i].properties.dma.toString()) == -1) {
+            dmaArray.push(sourceJson.features[i].properties.dma.toString());
         }
 
-        if (cdSelect != sourceJson.features[i].properties.cd113.toString()) {
-            cdSelect = sourceJson.features[i].properties.cd113.toString();
-            //alert("cd113:" + cdSelect);
-            $('#cd').append("<option>" + cdSelect + "</option>");
+
+        if (cdArray.indexOf(sourceJson.features[i].properties.cd113.toString()) == -1) {
+            cdArray.push(sourceJson.features[i].properties.cd113.toString());
         }
 
+        /*
+        //if (cdSelect != sourceJson.features[i].properties.cd113.toString()) {
+        alert("cdArray[" + i + "]: " + cdArray[i]);
+        alert(sourceJson.features[i].properties.cd113.toString());
+
+        if (cdArray[i] != sourceJson.features[i].properties.cd113.toString()) {
+        cdArray[i] = sourceJson.features[i].properties.cd113.toString();
+        //cdSelect = sourceJson.features[i].properties.cd113.toString();
+
+        //$('#cd').append("<option>" + cdSelect + "</option>");
+        }*/
+
+    }
+
+    cdArray.sort();
+    for (j = 0; j < cdArray.length; j++) {
+        $('#cd').append("<option>" + cdArray[j] + "</option>");
+    }
+
+    dmaArray.sort();
+    for (k = 0; k < dmaArray.length; k++) {
+        $('#dma').append("<option>" + dmaArray[k] + "</option>");
     }
 
 

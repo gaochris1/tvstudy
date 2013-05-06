@@ -43,15 +43,19 @@ $(document).ready(function () {
      $('#goUser4').click(function(){
     //alert("here");
 	 getcmaInput('dma');
-
     });
 
     $('#goUser5').click(function () {
     //alert("here");
     getcmaInput('cd');
-
     });
-	
+
+    $('#goUser6').click(function () {
+    //alert("here");
+    getcmaInput('affiliation');
+    });
+
+
     $('#btn-resetMap').click(function(){
 		$('#tbl-CMA').find('input[type="checkbox"]').each(function(){
 			$(this).removeAttr('checked');	
@@ -321,7 +325,8 @@ function getcmaInput(type){
 	var rows = '';
 	var cols = '';
 	var indexOf2dashes = '';
-    var channel = '';
+	var channel = '';
+	var affiliation = '';
 	//search by callsign
 	if (type=="callsign"){
         document.getElementById('results').style.display = "block";
@@ -557,6 +562,44 @@ if (type == "cd") {
 }
 
 
+//search by affiliation
+if (type == "affiliation") {
+    document.getElementById('results').style.display = "block";
+    affiliation = $('#affiliation').val();
+
+
+    if (affiliation.length != 0) {
+        $('#tbl_results tr td').parents('tr').remove();
+        //alert("sourceJson features length:  " + sourceJson.features.length);
+        row0 = '<tr><td colspan="4" align="center"><input id="' + affiliation + '" class="mapAffBtnClass" type="button" value="Map All Stations"</td></tr>';
+        for (i = 0; i < sourceJson.features.length; i++) {
+            if (sourceJson.features[i].properties.affiliation.toString().indexOf(affiliation) >= 0) {
+
+                sourceKey[i] = sourceJson.features[i].properties.SOURCEKEY.toString();
+                //alert("matched feature sourceKey:  " + sourceKey[i].toString());
+                callSign[i] = sourceJson.features[i].properties.CALLSIGN.toString();
+                //alert("matched feature callSign:  " + callSign[i].toString());
+                facilityId[i] = sourceJson.features[i].properties.FACILITYID.toString();
+                //alert("matched feature FacilityID:  " + facilityId[i].toString());
+                cols = '<td><input id="source' + sourceKey[i] + '" class="cmaID visuallyhidden" type="text" value="' + sourceKey[i] + '">'
+                cols += sourceKey[i] + '</td>';
+                cols += '<td>' + callSign[i] + '</td>';
+                cols += '<td>' + facilityId[i] + '</td>';
+                cols += '<td><input id="' + sourceKey[i] + '" type="button" value="Map" class="mapBtnClass"></td>';
+                row1 = '<tr style="background-color:rgb(225,225,225)">' + cols + '</tr>';
+                //alert ("row1: " + row1);
+                cols = '<td colspan="4">Population: ' + sourceJson.features[i].properties.total_po_1;
+                cols += ' ----  Interference-free: ' + sourceJson.features[i].properties.total_popu + '</td>';
+                row2 = '<tr>' + cols + '</tr>';
+                rows = rows + row1 + row2;
+
+
+            }
+        }
+        rows = row0 + rows
+        $('#tbl_results').find('tbody').append(rows);
+    }
+}
 
 
 
@@ -574,8 +617,14 @@ if (type == "cd") {
     //alert("channelId: " + channelId);
     drawChannelMap(channelId);
     });
- 	
-    //window.location.hash=sourceKey;
+
+    $('.mapAffBtnClass').click(function () {
+
+    var affId = this.id;
+    //alert("channelId: " + channelId);
+    drawAffMap(affId);
+    });
+//window.location.hash=sourceKey;
 
         
 	
@@ -659,6 +708,62 @@ function drawChannelMap(channelId){
   	map.zoomToExtent(cmaLayer.getDataExtent());
 }
 //end of function drawChannelMap
+
+
+function drawAffMap(affId) {
+    coverageLayer.removeAllFeatures();
+    
+
+    //draw source layer 
+    mySourceJson.features = [];
+    var sourceP = new OpenLayers.Format.GeoJSON(options);
+
+    for (i = 0; i < sourceJson.features.length; i++) {
+        if (sourceJson.features[i].properties.affiliation.toString().indexOf(affId.toString())>=0) {
+            mySourceJson.features.push(sourceJson.features[i]);
+        }
+    }
+    //alert("source layer feature length:" + mySourceJson.features.length );
+
+    if (mySourceJson.features.length > 0) {
+        var sourceFeats = sourceP.read(mySourceJson);
+        sourceLayer.removeAllFeatures();
+        ////////alert("inside sourceFeats Length: " + sourceFeats.length);
+        sourceLayer.addFeatures(sourceFeats);
+
+    }
+
+    var sourceFeats = sourceP.read(mySourceJson);
+    sourceLayer.removeAllFeatures();
+    ////alert("outside sourceFeats Length: " + sourceFeats.length);
+    sourceLayer.addFeatures(sourceFeats);
+
+    //draw contour layer
+    myJson.features = [];
+    var p = new OpenLayers.Format.GeoJSON(options);
+
+
+    for (i = 0; i < cmaJson.features.length; i++) {
+        if (cmaJson.features[i].properties.affiliation.toString().indexOf(affId.toString()) >= 0) {
+            myJson.features.push(cmaJson.features[i]);
+        }
+    }
+
+
+    if (myJson.features.length > 0) {
+        var feats = p.read(myJson);
+        cmaLayer.removeAllFeatures();
+        cmaLayer.addFeatures(feats);
+        map.zoomToExtent(cmaLayer.getDataExtent());
+    }
+    var feats = p.read(myJson);
+    cmaLayer.removeAllFeatures();
+    cmaLayer.addFeatures(feats);
+    ////alert("outside contour feats Length: " + feats.length);
+    map.zoomToExtent(cmaLayer.getDataExtent());
+}
+//end of function drawChannelMap
+
 
 function drawcma(sourceKey){
         //draw coverage first

@@ -226,13 +226,13 @@ var contourStyle = new OpenLayers.StyleMap({
     "default": new OpenLayers.Style({
         strokeColor: "#0b32fa",
 		//strokeOpacity: 1,
-    	strokeWidth: 2
+    	strokeWidth: 1
 		//fillColor: "#FFAEDB",
 		//fillOpacity: 0
     }),
     "temporary": new OpenLayers.Style({
         strokeColor: "#F09100",
-		strokeWidth:2
+		strokeWidth:1
 		//fillOpacity: 0
     })
 });
@@ -242,7 +242,7 @@ var sourceStyle = new OpenLayers.StyleMap({
         //strokeColor: "#0b32fa",
 		//strokeOpacity: 1,
     	//strokeWidth: 2,
-		pointRadius:5,
+		pointRadius:2,
 		fillColor:"#0b32fa",
 		label: "${CALLSIGN}",
         fontColor: "#0b32fa",
@@ -290,19 +290,19 @@ var cmaLayer = new OpenLayers.Layer.Vector("contour", {
 layers.push(cmaLayer);
 map.addLayers(layers);
 
-var sourceLayer = new OpenLayers.Layer.Vector("source", {
-    styleMap: sourceStyle,
-    displayInLayerSwitcher: false
-});
-layers.push(sourceLayer);
-map.addLayers(layers);
-
 var coverageLayer = new OpenLayers.Layer.Vector("coverage", {
     styleMap: coverageStyle,
     displayInLayerSwitcher: false,
     reportError: true
 });
 layers.push(coverageLayer);
+map.addLayers(layers);
+
+var sourceLayer = new OpenLayers.Layer.Vector("source", {
+    styleMap: sourceStyle,
+    displayInLayerSwitcher: false
+});
+layers.push(sourceLayer);
 map.addLayers(layers);
 
 var scaleline = new OpenLayers.Control.ScaleLine();

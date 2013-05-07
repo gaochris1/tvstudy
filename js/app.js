@@ -22,37 +22,45 @@ $(document).ready(function () {
 
 	
 	$('#goUser').click(function(){
-    getcmaInput('callsign');
+	    getcmaInput('callsign');
+	    document.getElementById("searchForm").reset();
+	    
 	});
 	 
 	 $('#goUser1').click(function(){
     //alert("here");
-	 getcmaInput('facilityid');
-	});
+	     getcmaInput('facilityid');
+	     document.getElementById("searchForm").reset();
+	 });
 	
 	 $('#goUser2').click(function(){
     //alert("here");
-	 getcmaInput('citystate');
+	     getcmaInput('citystate');
+	     document.getElementById("searchForm").reset();
 	 });
 	
   	 $('#goUser3').click(function(){
     //alert("here");
-     getcmaInput('channel');
-     });
+  	     getcmaInput('channel');
+  	     document.getElementById("searchForm").reset();
+  	 });
      
      $('#goUser4').click(function(){
     //alert("here");
-	 getcmaInput('dma');
-    });
+         getcmaInput('dma');
+         document.getElementById("searchForm").reset();
+     });
 
     $('#goUser5').click(function () {
     //alert("here");
-    getcmaInput('cd');
+        getcmaInput('cd');
+        document.getElementById("searchForm").reset();
     });
 
     $('#goUser6').click(function () {
     //alert("here");
-    getcmaInput('affiliation');
+        getcmaInput('affiliation');
+        document.getElementById("searchForm").reset();
     });
 
 
@@ -898,6 +906,9 @@ $.getJSON("data/source.geojson", function (data) {
     var cdArray = new Array();
     var dmaArray = new Array();
 
+    $('#cityState').append("<option value='Select='True'>Select</option>");
+    $('#cd').append("<option value='Select='True'>Select</option>");
+    $('#dma').append("<option value='Select='True'>Select</option>");
     for (i = 0; i < sourceJson.features.length; i++) {
         if (citySelect != sourceJson.features[i].properties.CITY.toString() || stateSelect != sourceJson.features[i].properties.STATE.toString()) {
             citySelect = sourceJson.features[i].properties.CITY.toString();
